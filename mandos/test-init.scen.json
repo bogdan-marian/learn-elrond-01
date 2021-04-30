@@ -1,0 +1,53 @@
+{
+  "name": "crowdfunding deployment test",
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:my_address": {
+          "nonce": "0",
+          "balance": "1,000,000"
+        }
+      },
+      "newAddresses": [
+        {
+          "creatorAddress": "address:my_address",
+          "creatorNonce": "0",
+          "newAddress": "address:the_crowdfunding_contract"
+        }
+      ]
+    },
+    {
+      "step": "scDeploy",
+      "tx": {
+        "from": "address:my_address",
+        "contractCode": "file:../output/crowdfunding.wasm",
+        "value": "0",
+        "gasLimit": "1,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:my_address": {
+          "nonce": "1",
+          "balance": "1,000,000"
+        },
+        "address:the_crowdfunding_contract": {
+          "nonce": "0",
+          "balance": "0",
+          "storage": {
+            "''owner": "address:my_address"
+          },
+          "code": "file:../output/crowdfunding.wasm"
+        }
+      }
+    }
+  ]
+}
